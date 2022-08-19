@@ -1,13 +1,21 @@
 import React from 'react';
-import Login from 'Login';
+import Login from 'pages/login';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Todo from 'pages/home';
+import { ThemeProvider } from 'styled-components';
+import theme from 'styles/theme';
+import GlobalStyle from 'GlobalStyle';
 
 const Router = () => {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-      </Routes>
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/todo" element={<Todo />} />
+        </Routes>
+      </ThemeProvider>
     </BrowserRouter>
   );
 };
