@@ -27,6 +27,10 @@ declare module 'styled-components' {
       text: string;
       border: string;
       background: string;
+      wallpaper: string;
+      gray: string;
+      lightGray: string;
+      white: string;
 
       primary: {
         [K in ColorScale]: string;

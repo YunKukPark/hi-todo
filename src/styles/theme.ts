@@ -41,7 +41,11 @@ const colors = {
   black: '#000',
   text: '#333333',
   border: '#DDDDDD',
+  gray: '#8c8d96',
+  lightGray: '#b2b3b9',
   background: '#EDEEF0',
+  wallpaper: '#FAFAFA',
+  white: '#FFF',
 
   primary: {
     light: '#92DDF6',

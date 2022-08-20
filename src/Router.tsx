@@ -5,16 +5,19 @@ import Todo from 'pages/home';
 import { ThemeProvider } from 'styled-components';
 import theme from 'styles/theme';
 import GlobalStyle from 'GlobalStyle';
+import Layout from 'components/Layout';
 
 const Router = () => {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/todo" element={<Todo />} />
-        </Routes>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/todo" element={<Todo />} />
+          </Routes>
+        </Layout>
       </ThemeProvider>
     </BrowserRouter>
   );
