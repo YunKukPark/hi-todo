@@ -1,9 +1,12 @@
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
 
+//TODO: Global style rendering test (memoization) 하기!
+
+/* ${() => console.log('Global style rendered')}; */
 const GlobalStyle = createGlobalStyle`
   ${reset};
-  
+
   * {
     margin: 0;
     font-family: ${({ theme }) => theme.fontFamilies.main};
