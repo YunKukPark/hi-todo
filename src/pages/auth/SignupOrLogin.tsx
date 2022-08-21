@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components/macro';
 import { flexBox } from 'styles/utils';
 import { textStyle } from 'styles/utils';
-import { InputBase, InputLabel } from 'components/Input';
+import { InputLabel } from 'components/Input';
 
 // 1. input Core Component 만들기
 // 2. axios fetching util 함수 만들기
@@ -12,9 +12,6 @@ import { InputBase, InputLabel } from 'components/Input';
 // 4. Login 요청
 
 // 근데 처음부터 클린코드를 할 생각 하지말고 선 구현 후 Component 나누고, axios instance 만들 것!
-
-axios.defaults.baseURL =
-  location.protocol + '//' + location.hostname + ':' + '8000';
 
 type UserForm = {
   email: string;
@@ -26,6 +23,7 @@ const SignupOrLogin = () => {
     email: '',
     password: '',
   });
+
   const handleInput = ({ target }: { target: HTMLInputElement }) => {
     setUserForm({ ...userForm, [target?.name]: target?.value });
     console.log(userForm);
@@ -41,32 +39,29 @@ const SignupOrLogin = () => {
       <Styled.Container>
         <Styled.WelcomeHand>👋</Styled.WelcomeHand>
         <Styled.Title>Welcome!</Styled.Title>
-        <form onClick={e => e.preventDefault()}>
-          <Styled.Wrapper>
-            <Styled.Input
+        <Styled.Wrapper>
+          <form onClick={e => e.preventDefault()}>
+            <InputLabel
+              label="Email"
               name="email"
               type="text"
-              placeholder="아이디"
+              placeholder="Email"
               onChange={handleInput}
+              isHint
             />
-            <Styled.Input
+            <InputLabel
+              label="Password"
               name="password"
               type="password"
-              placeholder="비밀번호"
+              placeholder="Password"
               onChange={handleInput}
+              isHint
             />
-            <InputBase name="base" type="text" placeholder="Base input" />
-            <InputLabel
-              label="password"
-              name="label"
-              type="text"
-              placeholder="password with Label"
-            />
-          </Styled.Wrapper>
-          <Styled.Button onClick={handlePressSubmitButton} type="submit">
-            제출요
-          </Styled.Button>
-        </form>
+            <Styled.Button onClick={handlePressSubmitButton} type="submit">
+              제출요
+            </Styled.Button>
+          </form>
+        </Styled.Wrapper>
       </Styled.Container>
     </Styled.Page>
   );
@@ -104,20 +99,14 @@ const Styled = {
   `,
 
   Wrapper: styled.div`
-    margin-bottom: 16px;
-  `,
-
-  Input: styled.input`
-    ${textStyle('base')};
     width: 100%;
-    margin-bottom: 8px;
-    padding: 13px 15px;
-    border-bottom: 1px solid ${({ theme }) => theme.colors.gray};
+    margin-bottom: 16px;
   `,
 
   Button: styled.button`
     ${textStyle('base')};
     width: 100%;
+    margin-top: 24px;
     padding: 16px 0;
     border-radius: 4px;
     font-weight: 700;
