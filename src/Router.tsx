@@ -1,5 +1,5 @@
 import React from 'react';
-import Login from 'pages/login';
+import SignupOrLogin from 'pages/auth/SignupOrLogin';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Todo from 'pages/home';
 import { ThemeProvider } from 'styled-components';
@@ -14,7 +14,7 @@ const Router = () => {
         <GlobalStyle />
         <Layout>
           <Routes>
-            <Route path="/" element={<Login />} />
+            <Route path="/" element={<SignupOrLogin />} />
             <Route path="/todo" element={<Todo />} />
           </Routes>
         </Layout>
