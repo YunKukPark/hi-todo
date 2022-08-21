@@ -54,9 +54,9 @@ const colors = {
   },
 
   semantic: {
-    success: '#60B527',
-    error: '#ff3932',
-    warning: '#f79009',
+    success: '#2DCA61',
+    error: '#F9324A',
+    warning: '#FFB20C',
   },
 };
 
