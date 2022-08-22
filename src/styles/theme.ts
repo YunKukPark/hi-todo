@@ -41,7 +41,11 @@ const colors = {
   black: '#000',
   text: '#333333',
   border: '#DDDDDD',
+  gray: '#8c8d96',
+  lightGray: '#b2b3b9',
   background: '#EDEEF0',
+  wallpaper: '#FAFAFA',
+  white: '#FFF',
 
   primary: {
     light: '#92DDF6',
@@ -50,9 +54,9 @@ const colors = {
   },
 
   semantic: {
-    success: '#60B527',
-    error: '#ff3932',
-    warning: '#f79009',
+    success: '#2DCA61',
+    error: '#F9324A',
+    warning: '#FFB20C',
   },
 };
 
