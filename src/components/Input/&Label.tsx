@@ -1,15 +1,16 @@
 import React, { memo, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
-import { flexBox, textStyle } from 'styles/utils';
+import { textStyle } from 'styles/utils';
 import { InputBase } from '.';
 import { InputPropType } from './&Base';
 
 type LabelInputPropType = InputPropType & {
   label: string;
+  hintLabel?: string;
 };
 
 const Label = (props: LabelInputPropType) => {
-  const { onChange: _onChange, onBlur: _onBlur } = props;
+  const { onChange: _onChange, onBlur: _onBlur, hintLabel } = props;
   const inputRef = useRef<string>('');
   const { placeholder, ...others } = props;
   const [isLabelActive, setIsLabelActive] = useState(false);
@@ -25,31 +26,35 @@ const Label = (props: LabelInputPropType) => {
   };
 
   return (
-    <Styled.Wrapper>
-      <Styled.Label isLabelActive={isLabelActive}>{placeholder}</Styled.Label>
-      <Styled.Input
-        {...props}
-        ref={inputRef}
-        onChange={onChange}
-        onFocus={() => setIsLabelActive(true)}
-        onBlur={onBlur}
-      />
-    </Styled.Wrapper>
+    <Styled.Container>
+      <Styled.Wrapper>
+        <Styled.Label className={isLabelActive ? 'active' : ''}>
+          {placeholder}
+        </Styled.Label>
+        <Styled.Input
+          {...others}
+          ref={inputRef}
+          onChange={onChange}
+          onFocus={() => setIsLabelActive(true)}
+          onBlur={onBlur}
+        />
+      </Styled.Wrapper>
+      {hintLabel && <Styled.Hint>{hintLabel}</Styled.Hint>}
+    </Styled.Container>
   );
 };
 
 export default memo(Label);
 
-type StyledLabel = {
-  isLabelActive: boolean;
-};
-
 const Styled = {
+  Container: styled.div`
+    min-height: 66px;
+    margin-bottom: 8px;
+  `,
+
   Wrapper: styled.div`
-    ${flexBox('start', 'start')};
     position: relative;
     flex-direction: column;
-    min-height: 66px;
   `,
 
   Input: styled(InputBase)`
@@ -58,16 +63,27 @@ const Styled = {
     }
   `,
 
-  Label: styled.span<StyledLabel>`
-    ${({ isLabelActive }) =>
-      isLabelActive ? textStyle('xxs') : textStyle('base')};
+  Label: styled.span`
+    ${textStyle('base')};
     position: absolute;
-    top: ${({ isLabelActive }) => (isLabelActive ? 0 : `40%`)};
-    padding: ${({ isLabelActive }) => (isLabelActive ? 0 : '0 15px')};
+    top: 50%;
+    padding: 0 15px;
     transform: translateY(-50%);
     letter-spacing: 1px;
-    color: ${({ isLabelActive, theme }) =>
-      isLabelActive ? theme.colors.text : 'rgb(120, 120, 120)'};
+    color: ${({ theme }) => theme.colors.gray};
     transition: ease 0.3s;
+
+    &.active {
+      ${textStyle('xxs')}
+      top: 0;
+      padding: 0;
+      color: ${({ theme }) => theme.colors.text};
+    }
+  `,
+
+  Hint: styled.p`
+    ${textStyle('xxs')};
+    color: ${({ theme }) => theme.colors.gray};
+    padding: 0 15px;
   `,
 };

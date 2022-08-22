@@ -4,25 +4,13 @@ import { textStyle } from 'styles/utils';
 
 export type InputPropType = InputHTMLAttributes<HTMLInputElement> & {
   ref?: RefObject<any>;
-  isHint?: boolean;
 };
 
 const Base = (props: InputPropType) => {
-  const { isHint } = props;
-  return (
-    <Wrapper>
-      <Input {...props} />
-      {isHint && <Hint>hint 있어요</Hint>}
-    </Wrapper>
-  );
+  return <Input {...props} />;
 };
 
 export default memo(Base);
-
-const Wrapper = styled.div`
-  width: 100%;
-  margin-bottom: 16px;
-`;
 
 const Input = styled.input`
   ${textStyle('base')};
@@ -37,10 +25,4 @@ const Input = styled.input`
   :focus {
     border-bottom: 1px solid ${({ theme }) => theme.colors.primary.base};
   }
-`;
-
-const Hint = styled.p`
-  ${textStyle('xxs')};
-  color: ${({ theme }) => theme.colors.gray};
-  padding: 0 15px;
 `;
