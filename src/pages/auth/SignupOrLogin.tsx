@@ -1,21 +1,20 @@
 import api from 'lib/api';
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components/macro';
 import { flexBox } from 'styles/utils';
 import { textStyle } from 'styles/utils';
 import { InputLabel } from 'components/Input';
-
-// 1. input Core Component 만들기
-// 2. axios fetching util 함수 만들기
-// 3. env에 따른 변경사항 점 만들기 (getEnv() 해서 env에 해당하는 url 뺄 수 있게끔)
-// 4. Login 요청
-
-// 근데 처음부터 클린코드를 할 생각 하지말고 선 구현 후 Component 나누고, axios instance 만들 것!
+import { useNavigate } from 'react-router-dom';
 
 type UserForm = {
   email: string;
   password: string;
+};
+
+const RULES = {
+  email: (value: string) => value.includes('@'),
+  password: (value: string) => value.length >= 8,
 };
 
 const SignupOrLogin = () => {
@@ -24,15 +23,46 @@ const SignupOrLogin = () => {
     password: '',
   });
 
-  const handleInput = ({ target }: { target: HTMLInputElement }) => {
-    setUserForm({ ...userForm, [target?.name]: target?.value });
-    console.log(userForm);
-  };
+  const navigate = useNavigate();
 
-  const handlePressSubmitButton = async () => {
-    const data = await axios.post(api.auth.signup, userForm);
-    console.log(data);
-  };
+  const onChangeText = useCallback(
+    ({ target }: { target: HTMLInputElement }) => {
+      setUserForm({ ...userForm, [target?.name]: target?.value });
+    },
+    [userForm]
+  );
+
+  const validateUserForm = useCallback(() => {
+    const { email, password } = userForm;
+    const isValid = RULES.email(email) && RULES.password(password);
+    return !!(isValid && email && password);
+  }, [userForm]);
+
+  const handlePressSubmitButton = useCallback(async () => {
+    const isValid = validateUserForm();
+    if (!isValid) {
+      alert('다시 한번 확인해 주세요');
+      return;
+    }
+
+    try {
+      const loginResponse = await axios.post(api.auth.signin, userForm, {
+        validateStatus: status => status < 400,
+      });
+      localStorage.setItem('accessToken', loginResponse.data.access_token);
+      navigate('/todo');
+    } catch (error: any) {
+      if (error.response.status === 404) {
+        const signupResponse = await axios.post(api.auth.signup, userForm, {
+          validateStatus: status => status < 400,
+        });
+        navigate('/todo');
+        localStorage.setItem('accessToken', signupResponse.data.access_token);
+      } else {
+        console.log(error);
+      }
+    }
+  }, [userForm, validateUserForm, navigate]);
 
   return (
     <Styled.Page>
@@ -46,19 +76,19 @@ const SignupOrLogin = () => {
               name="email"
               type="text"
               placeholder="Email"
-              onChange={handleInput}
-              isHint
+              onChange={onChangeText}
+              hintLabel="Email은 @가 포함되어야 합니다"
             />
             <InputLabel
               label="Password"
               name="password"
               type="password"
               placeholder="Password"
-              onChange={handleInput}
-              isHint
+              onChange={onChangeText}
+              hintLabel="Password는 8자 이상이 되어야 합니다"
             />
             <Styled.Button onClick={handlePressSubmitButton} type="submit">
-              제출요
+              로그인 / 회원가입
             </Styled.Button>
           </form>
         </Styled.Wrapper>
