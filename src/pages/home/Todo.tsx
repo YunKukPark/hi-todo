@@ -1,32 +1,34 @@
-import { InputBase } from 'components/Input';
-import TodoItem from 'components/Todo/&Item';
+import TodoList from 'components/Todo/&List';
+import Header from 'components/Todo/Header';
 import { TodoApi } from 'lib/api';
-import { KeyboardEvent, ChangeEvent, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { flexBox, textStyle } from 'styles/utils';
 
-export type TodoItemType = {
+export type TodoType = {
   id: number;
   todo: string;
   isCompleted: boolean;
   userId: number;
 };
 
-type TodoListType = TodoItemType[];
-
 const Todo = () => {
   const token = localStorage.getItem('accessToken') || null;
   const navigate = useNavigate();
-  const [todos, setTodos] = useState<TodoListType>([]);
+  const [todos, setTodos] = useState<TodoType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [userInput, setUserInput] = useState('');
-  const hasTodo = todos.length > 0;
 
-  const createTodo = async () => {
+  const fetchTodos = async () => {
+    const res = await TodoApi.get('');
+    setTodos(res.data);
+    setIsLoading(false);
+  };
+
+  const createTodo = async (userInput: string) => {
     if (!userInput) return;
-    await TodoApi.post('', { todo: userInput });
-    setUserInput('');
+    const res = await TodoApi.post('', { todo: userInput });
+    setTodos([...todos, res.data]);
   };
 
   const deleteTodo = async (id: number) => {
@@ -34,70 +36,45 @@ const Todo = () => {
     setTodos(todos.filter(todo => todo.id !== id));
   };
 
-  const onClickAddBtn = () => {
-    createTodo();
-  };
-
-  const onPressEnter = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== 'Enter') return;
-    createTodo();
-  };
-
-  const onChangeTodoInput = (e: ChangeEvent<HTMLInputElement>) => {
-    const { target } = e;
-    setUserInput(target.value);
+  const updateTodo = async (payload: {
+    id: number;
+    todo?: string;
+    isCompleted?: boolean;
+  }) => {
+    const { id, todo, isCompleted } = payload;
+    const res = await TodoApi.put(`/${id}`, { todo, isCompleted });
+    setTodos(todos.map(todo => (todo.id === id ? res.data : todo)));
   };
 
   useEffect(() => {
-    if (!token) navigate('/');
+    if (!token) {
+      navigate('/');
+      return;
+    }
+    fetchTodos();
   }, [token, navigate]);
 
-  useEffect(() => {
-    const fetchTodos = async () => {
-      const res = await TodoApi.get('');
-      setTodos(res.data);
-      setIsLoading(false);
-    };
-    fetchTodos();
-  }, [todos]);
-
-  if (isLoading) return <></>;
+  if (!token) return null;
+  if (isLoading) return <p>Loading...</p>;
 
   return (
     <Styled.Page>
       <Styled.Container>
         <Styled.Title>TODO</Styled.Title>
-        <Styled.InputContainer>
-          <InputBase
-            onChange={onChangeTodoInput}
-            onKeyDown={onPressEnter}
-            value={userInput}
-          />
-          <Styled.Button onClick={onClickAddBtn}>Add</Styled.Button>
-        </Styled.InputContainer>
-        <Styled.Todo>
-          {!hasTodo ? (
-            <Styled.Placeholder>No todos yet</Styled.Placeholder>
-          ) : (
-            <Styled.List>
-              {todos.map(todo => (
-                <TodoItem key={todo.id} {...todo} onDelete={deleteTodo} />
-              ))}
-            </Styled.List>
-          )}
-        </Styled.Todo>
+        <Header createTodo={createTodo} />
+        <TodoList todos={todos} onDelete={deleteTodo} onUpdate={updateTodo} />
       </Styled.Container>
     </Styled.Page>
   );
 };
 
-export default Todo;
+export default memo(Todo);
 
 const Styled = {
   Page: styled.div`
     ${flexBox()};
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     background-color: ${({ theme }) => theme.colors.wallpaper};
   `,
 
@@ -108,41 +85,8 @@ const Styled = {
     border-radius: 24px; ;
   `,
 
-  InputContainer: styled.div`
-    ${flexBox('start', 'center')};
-  `,
-
   Title: styled.h1`
     ${textStyle('lg')};
-    font-weight: 700;
-  `,
-
-  Todo: styled.div`
-    ${flexBox('start', 'start')};
-  `,
-
-  Placeholder: styled.p`
-    ${textStyle('base')};
-    ${flexBox()};
-    color: ${({ theme }) => theme.colors.placeholder};
-    width: 100%;
-    font-weight: 700;
-    padding: 44px 0;
-  `,
-
-  List: styled.ul`
-    width: 100%;
-    margin: 16px 0;
-  `,
-
-  Button: styled.button`
-    ${textStyle('base')};
-    width: 50%;
-    margin-left: 8px;
-    padding: 8px 6px;
-    background-color: ${({ theme }) => theme.colors.primary.base};
-    color: ${({ theme }) => theme.colors.white};
-    border-radius: 12px;
     font-weight: 700;
   `,
 };
