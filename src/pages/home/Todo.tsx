@@ -1,6 +1,7 @@
 import TodoList from 'components/Todo/&List';
 import Header from 'components/Todo/Header';
 import { TodoApi } from 'lib/api';
+import { getUserId, parseJwt } from 'lib/utils';
 import { memo, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
@@ -18,6 +19,7 @@ const Todo = () => {
   const navigate = useNavigate();
   const [todos, setTodos] = useState<TodoType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const userId = getUserId(parseJwt(token)?.email);
 
   const fetchTodos = async () => {
     const res = await TodoApi.get('');
@@ -60,7 +62,7 @@ const Todo = () => {
   return (
     <Styled.Page>
       <Styled.Container>
-        <Styled.Title>TODO</Styled.Title>
+        <Styled.Title>{userId}'s TODO</Styled.Title>
         <Header createTodo={createTodo} />
         <TodoList todos={todos} onDelete={deleteTodo} onUpdate={updateTodo} />
       </Styled.Container>

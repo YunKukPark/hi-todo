@@ -21,7 +21,6 @@ const Label = (props: LabelInputPropType) => {
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     _onChange?.(e);
-    console.dir(value);
   };
 
   const onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
