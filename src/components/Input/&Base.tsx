@@ -1,10 +1,8 @@
-import React, { InputHTMLAttributes, memo, Ref, RefObject } from 'react';
+import React, { InputHTMLAttributes, memo, RefObject } from 'react';
 import styled from 'styled-components/macro';
 import { textStyle } from 'styles/utils';
 
-export type InputPropType = InputHTMLAttributes<HTMLInputElement> & {
-  ref?: RefObject<any>;
-};
+export type InputPropType = InputHTMLAttributes<HTMLInputElement>;
 
 const Base = (props: InputPropType) => {
   return <Input {...props} />;
