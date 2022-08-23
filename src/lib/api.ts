@@ -1,20 +1,13 @@
-const baseUrl = `http://localhost:8000`;
-// const baseUrl = {
-//   local: `localhost:8000`,
-//   prod: `https://5co7shqbsf.execute-api.ap-northeast-2.amazonaws.com/production`,
-// };
+import axios from 'axios';
 
-const auth = {
-  signup: `${baseUrl}/auth/signup`,
-  signin: `${baseUrl}/auth/signin`,
+const baseUrl = {
+  auth: `http://localhost:8000/auth`,
+  todos: `http://localhost:8000/todos`,
 };
 
-// TODO: Axios instance 만들기
-const todo = {
-  read: `${baseUrl}/todos`,
-  update: (id: number) => `${baseUrl}/todos/${id}`,
-};
+export const TodoApi = axios.create({ baseURL: baseUrl.todos });
+TodoApi.defaults.headers.common[
+  'Authorization'
+] = `Bearer ${localStorage.getItem('accessToken')}`;
 
-const api = { auth, todo };
-
-export default api;
+export const AuthApi = axios.create({ baseURL: baseUrl.auth });
