@@ -1,4 +1,4 @@
-import React, { memo, useRef, useState } from 'react';
+import React, { memo, useState } from 'react';
 import styled from 'styled-components/macro';
 import { textStyle } from 'styles/utils';
 import { InputBase } from '.';
@@ -10,19 +10,23 @@ type LabelInputPropType = InputPropType & {
 };
 
 const Label = (props: LabelInputPropType) => {
-  const { onChange: _onChange, onBlur: _onBlur, hintLabel } = props;
-  const inputRef = useRef<string>('');
+  const { value, onChange: _onChange, onFocus: _onFocus, hintLabel } = props;
   const { placeholder, ...others } = props;
   const [isLabelActive, setIsLabelActive] = useState(false);
 
   const onBlur = () => {
-    if (inputRef.current !== '') return;
+    if (value) return;
     setIsLabelActive(false);
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     _onChange?.(e);
-    inputRef.current = e?.target?.value;
+    console.dir(value);
+  };
+
+  const onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    _onFocus?.(e);
+    setIsLabelActive(true);
   };
 
   return (
@@ -33,9 +37,8 @@ const Label = (props: LabelInputPropType) => {
         </Styled.Label>
         <Styled.Input
           {...others}
-          ref={inputRef}
           onChange={onChange}
-          onFocus={() => setIsLabelActive(true)}
+          onFocus={onFocus}
           onBlur={onBlur}
         />
       </Styled.Wrapper>

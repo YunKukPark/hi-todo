@@ -1,6 +1,5 @@
-import api from 'lib/api';
-import axios from 'axios';
-import React, { useCallback, useState } from 'react';
+import { AuthApi, TodoApi } from 'lib/api';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { flexBox } from 'styles/utils';
 import { textStyle } from 'styles/utils';
@@ -18,12 +17,22 @@ const RULES = {
 };
 
 const SignupOrLogin = () => {
+  const token = localStorage.getItem('accessToken') || null;
+  const navigate = useNavigate();
+
   const [userForm, setUserForm] = useState<UserForm>({
     email: '',
     password: '',
   });
 
-  const navigate = useNavigate();
+  const goToTodo = useCallback(
+    (token: string) => {
+      localStorage.setItem('accessToken', token);
+      TodoApi.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      navigate('/todo');
+    },
+    [navigate]
+  );
 
   const onChangeText = useCallback(
     ({ target }: { target: HTMLInputElement }) => {
@@ -38,31 +47,34 @@ const SignupOrLogin = () => {
     return !!(isValid && email && password);
   }, [userForm]);
 
-  const handlePressSubmitButton = useCallback(async () => {
+  const handleClickSubmitButton = useCallback(async () => {
     const isValid = validateUserForm();
     if (!isValid) {
       alert('다시 한번 확인해 주세요');
       return;
     }
 
+    const { email, password } = userForm;
     try {
-      const loginResponse = await axios.post(api.auth.signin, userForm, {
-        validateStatus: status => status < 400,
-      });
-      localStorage.setItem('accessToken', loginResponse.data.access_token);
-      navigate('/todo');
-    } catch (error: any) {
-      if (error.response.status === 404) {
-        const signupResponse = await axios.post(api.auth.signup, userForm, {
-          validateStatus: status => status < 400,
-        });
-        navigate('/todo');
-        localStorage.setItem('accessToken', signupResponse.data.access_token);
-      } else {
-        console.log(error);
+      const { data } = await AuthApi.post('/signin', { email, password });
+      goToTodo(data.access_token);
+    } catch (err: any) {
+      if (err.response.status === 401) {
+        alert('이메일 또는 비밀번호가 잘못되었습니다.');
+        return;
+      }
+      if (err.response.status === 404) {
+        // signup
+        const { data } = await AuthApi.post('/signup', { email, password });
+        goToTodo(data.access_token);
+        return;
       }
     }
-  }, [userForm, validateUserForm, navigate]);
+  }, [userForm, validateUserForm, goToTodo]);
+
+  useEffect(() => {
+    if (token) navigate('/todo');
+  }, [navigate, token]);
 
   return (
     <Styled.Page>
@@ -74,6 +86,7 @@ const SignupOrLogin = () => {
             <InputLabel
               label="Email"
               name="email"
+              value={userForm.email}
               type="text"
               placeholder="Email"
               onChange={onChangeText}
@@ -83,11 +96,12 @@ const SignupOrLogin = () => {
               label="Password"
               name="password"
               type="password"
+              value={userForm.password}
               placeholder="Password"
               onChange={onChangeText}
               hintLabel="Password는 8자 이상이 되어야 합니다"
             />
-            <Styled.Button onClick={handlePressSubmitButton} type="submit">
+            <Styled.Button onClick={handleClickSubmitButton} type="submit">
               로그인 / 회원가입
             </Styled.Button>
           </form>

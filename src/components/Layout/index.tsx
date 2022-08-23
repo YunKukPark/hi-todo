@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 
 type LayoutProps = {
-  children: any;
+  children: ReactNode;
 };
 
 const Layout = ({ children }: LayoutProps) => {
@@ -11,6 +11,7 @@ const Layout = ({ children }: LayoutProps) => {
 
 const Styled = {
   Container: styled.div`
+    padding-top: 50px;
     background-color: ${({ theme }) => theme.colors.wallpaper}; ;
   `,
 };
