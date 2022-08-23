@@ -82,12 +82,18 @@ const TodoItem = (props: TodoItemProps) => {
         )}
       </div>
       <div className="right">
-        <Styled.Icon>
-          <Styled.EditBtn selected={isEditing} onClick={onClickEditBtn} />
-        </Styled.Icon>
-        <Styled.Icon onClick={() => onDelete(id)}>
-          <Styled.DeleteBtn />
-        </Styled.Icon>
+        {isEditing ? (
+          <button>hihi</button>
+        ) : (
+          <>
+            <Styled.Icon>
+              <Styled.EditBtn selected={isEditing} onClick={onClickEditBtn} />
+            </Styled.Icon>
+            <Styled.Icon onClick={() => onDelete(id)}>
+              <Styled.DeleteBtn />
+            </Styled.Icon>
+          </>
+        )}
       </div>
     </Styled.Item>
   );
@@ -95,10 +101,6 @@ const TodoItem = (props: TodoItemProps) => {
 
 type IconStyleProps = {
   selected: boolean;
-};
-
-type TodoTextStyleProps = {
-  isCompleted: boolean;
 };
 
 const Styled = {

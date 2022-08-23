@@ -1,10 +1,11 @@
 import { AuthApi, TodoApi } from 'lib/api';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components/macro';
 import { flexBox } from 'styles/utils';
 import { textStyle } from 'styles/utils';
 import { InputLabel } from 'components/Input';
 import { useNavigate } from 'react-router-dom';
+import Button from 'components/Button';
 
 type UserForm = {
   email: string;
@@ -25,6 +26,12 @@ const SignupOrLogin = () => {
     password: '',
   });
 
+  const isValid = (() => {
+    const { email, password } = userForm;
+    const isValid = RULES.email(email) && RULES.password(password);
+    return !!(isValid && email && password);
+  })() as boolean;
+
   const goToTodo = useCallback(
     (token: string) => {
       localStorage.setItem('accessToken', token);
@@ -41,14 +48,7 @@ const SignupOrLogin = () => {
     [userForm]
   );
 
-  const validateUserForm = useCallback(() => {
-    const { email, password } = userForm;
-    const isValid = RULES.email(email) && RULES.password(password);
-    return !!(isValid && email && password);
-  }, [userForm]);
-
   const handleClickSubmitButton = useCallback(async () => {
-    const isValid = validateUserForm();
     if (!isValid) {
       alert('다시 한번 확인해 주세요');
       return;
@@ -70,7 +70,7 @@ const SignupOrLogin = () => {
         return;
       }
     }
-  }, [userForm, validateUserForm, goToTodo]);
+  }, [userForm, isValid, goToTodo]);
 
   useEffect(() => {
     if (token) navigate('/todo');
@@ -101,7 +101,12 @@ const SignupOrLogin = () => {
               onChange={onChangeText}
               hintLabel="Password는 8자 이상이 되어야 합니다"
             />
-            <Styled.Button onClick={handleClickSubmitButton} type="submit">
+            <Styled.Button
+              variant="primary"
+              disabled={!isValid}
+              onClick={handleClickSubmitButton}
+              type="submit"
+            >
               로그인 / 회원가입
             </Styled.Button>
           </form>
@@ -147,19 +152,10 @@ const Styled = {
     margin-bottom: 16px;
   `,
 
-  Button: styled.button`
+  Button: styled(Button)`
     ${textStyle('base')};
     width: 100%;
     margin-top: 24px;
-    padding: 16px 0;
-    border-radius: 4px;
-    font-weight: 700;
-    color: ${({ theme }) => theme.colors.white};
-    background-color: ${({ theme }) => theme.colors.primary.base};
-    transition: background-color 300ms ease-in-out;
-
-    :hover {
-      background-color: ${({ theme }) => theme.colors.primary.dark};
-    }
+    height: 55px;
   `,
 };
