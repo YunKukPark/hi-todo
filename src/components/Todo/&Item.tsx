@@ -105,7 +105,7 @@ const Styled = {
   Item: styled.li`
     ${flexBox('between', 'center')};
     width: 100%;
-    height: 55px;
+    min-height: 55px;
     padding: 8px 0;
 
     .left {
