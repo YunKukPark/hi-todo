@@ -1,10 +1,10 @@
 import { TodoApi } from 'lib/api';
-import { TodoItemType } from 'pages/home/Todo';
+import { TodoType } from 'pages/home/Todo';
 import React, {
   ChangeEvent,
   KeyboardEvent,
   memo,
-  useRef,
+  useCallback,
   useState,
 } from 'react';
 import {
@@ -17,47 +17,45 @@ import styled from 'styled-components/macro';
 import theme from 'styles/theme';
 import { flexBox, textStyle } from 'styles/utils';
 
-interface TodoItemProps extends TodoItemType {
+interface TodoItemProps extends TodoType {
   onDelete: (id: number) => void;
+  onUpdate: (payload: {
+    id: number;
+    todo?: string;
+    isCompleted?: boolean;
+  }) => void;
 }
 
 const TodoItem = (props: TodoItemProps) => {
-  const { id, todo, isCompleted, onDelete } = props;
+  const { id, todo, isCompleted, onDelete, onUpdate } = props;
   const [userInput, setUserInput] = useState(todo);
   const [isEditing, setIsEditing] = useState(false);
 
-  const updateTodo = async (text: string, isCompleted: boolean) => {
-    if (todo === text) return;
-    const res = await TodoApi.put(`/${id}`, { todo: text, isCompleted });
-    console.log(res);
-  };
-
-  const onClickEditBtn = () => {
+  const onClickEditBtn = useCallback(() => {
     setIsEditing(prev => !prev);
-  };
+  }, []);
 
-  const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setUserInput(e.target.value);
-  };
+  }, []);
 
-  const onPressEnter = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== 'Enter') return;
-    updateTodo(userInput, isCompleted);
+  const onPressEnter = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key !== 'Enter') return;
+      onUpdate({ id, todo: userInput, isCompleted });
+      setIsEditing(false);
+    },
+    [id, onUpdate, userInput, isCompleted]
+  );
+
+  const onBlurInput = useCallback(async () => {
     setIsEditing(false);
-  };
+    onUpdate({ id, todo: userInput, isCompleted });
+  }, [id, onUpdate, userInput, isCompleted]);
 
-  const onBlurInput = async () => {
-    setIsEditing(false);
-    await updateTodo(userInput, isCompleted);
-  };
-
-  const onClickCheckboxBtn = async () => {
-    const res = await TodoApi.put(`/${id}`, {
-      todo,
-      isCompleted: !isCompleted,
-    });
-    console.log(res);
-  };
+  const onClickCheckboxBtn = useCallback(() => {
+    onUpdate({ id, todo, isCompleted: !isCompleted });
+  }, [id, isCompleted, onUpdate, todo]);
 
   return (
     <Styled.Item>
@@ -79,22 +77,29 @@ const TodoItem = (props: TodoItemProps) => {
             onKeyPress={onPressEnter}
           />
         ) : (
-          <Styled.TodoText>{todo}</Styled.TodoText>
+          <Styled.TodoText className={isCompleted ? 'is-completed' : ''}>
+            {todo}
+          </Styled.TodoText>
         )}
       </div>
       <div className="right">
         <Styled.Icon>
-          <RiBallPenLine
-            onClick={onClickEditBtn}
-            color={isEditing ? theme.colors.primary.base : theme.colors.gray}
-          />
+          <Styled.EditBtn selected={isEditing} onClick={onClickEditBtn} />
         </Styled.Icon>
         <Styled.Icon onClick={() => onDelete(id)}>
-          <RiCloseLine />
+          <Styled.DeleteBtn />
         </Styled.Icon>
       </div>
     </Styled.Item>
   );
+};
+
+type IconStyleProps = {
+  selected: boolean;
+};
+
+type TodoTextStyleProps = {
+  isCompleted: boolean;
 };
 
 const Styled = {
@@ -119,14 +124,39 @@ const Styled = {
     color: ${({ theme }) => theme.colors.gray};
     margin-right: 8px;
     transition: color 250ms ease-in-out;
+    cursor: pointer;
 
     :last-child {
       margin-right: 0;
     }
   `,
 
+  EditBtn: styled(RiBallPenLine)<IconStyleProps>`
+    transition: color 250ms ease-in-out;
+    color: ${({ selected, theme }) =>
+      selected ? theme.colors.primary.base : theme.colors.gray};
+    :hover {
+      color: ${({ theme }) => theme.colors.primary.light};
+    }
+  `,
+
+  DeleteBtn: styled(RiCloseLine)`
+    transition: color 250ms ease-in-out;
+
+    :hover {
+      color: ${({ theme }) => theme.colors.semantic.error};
+    }
+  `,
+
   TodoText: styled.p`
     ${textStyle('base')};
+
+    &.is-completed {
+      color: ${({ theme }) => theme.colors.gray};
+      text-decoration: line-through;
+      text-decoration-color: ${({ theme }) => theme.colors.gray};
+      text-decoration-thickness: 1px;
+    }
   `,
 };
 
