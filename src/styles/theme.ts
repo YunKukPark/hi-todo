@@ -42,7 +42,7 @@ const colors = {
   text: '#333333',
   border: '#DDDDDD',
   gray: '#8c8d96',
-  lightGray: '#b2b3b9',
+  placeholder: '#b2b3b9',
   background: '#EDEEF0',
   wallpaper: '#FAFAFA',
   white: '#FFF',

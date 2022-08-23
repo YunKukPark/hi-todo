@@ -29,7 +29,7 @@ declare module 'styled-components' {
       background: string;
       wallpaper: string;
       gray: string;
-      lightGray: string;
+      placeholder: string;
       white: string;
 
       primary: {
