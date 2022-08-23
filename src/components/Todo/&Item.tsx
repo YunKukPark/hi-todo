@@ -1,4 +1,3 @@
-import { TodoApi } from 'lib/api';
 import { TodoType } from 'pages/home/Todo';
 import React, {
   ChangeEvent,
@@ -111,6 +110,7 @@ const Styled = {
 
     .left {
       ${flexBox('start', 'center')};
+      overflow: hidden;
     }
 
     .right {
@@ -150,7 +150,8 @@ const Styled = {
 
   TodoText: styled.p`
     ${textStyle('base')};
-
+    overflow: hidden;
+    text-overflow: ellipsis;
     &.is-completed {
       color: ${({ theme }) => theme.colors.gray};
       text-decoration: line-through;
