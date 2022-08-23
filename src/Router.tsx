@@ -6,12 +6,14 @@ import { ThemeProvider } from 'styled-components';
 import theme from 'styles/theme';
 import GlobalStyle from 'GlobalStyle';
 import Layout from 'components/Layout';
+import GNB from 'components/Layout/GNB';
 
 const Router = () => {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
+        <GNB />
         <Layout>
           <Routes>
             <Route path="/" element={<SignupOrLogin />} />
