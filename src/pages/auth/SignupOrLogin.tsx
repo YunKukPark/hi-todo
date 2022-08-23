@@ -1,6 +1,5 @@
-import api from 'lib/api';
-import axios from 'axios';
-import React, { useCallback, useState } from 'react';
+import { AuthApi } from 'lib/api';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { flexBox } from 'styles/utils';
 import { textStyle } from 'styles/utils';
@@ -18,12 +17,13 @@ const RULES = {
 };
 
 const SignupOrLogin = () => {
+  const token = localStorage.getItem('accessToken') || null;
+  const navigate = useNavigate();
+
   const [userForm, setUserForm] = useState<UserForm>({
     email: '',
     password: '',
   });
-
-  const navigate = useNavigate();
 
   const onChangeText = useCallback(
     ({ target }: { target: HTMLInputElement }) => {
@@ -46,14 +46,14 @@ const SignupOrLogin = () => {
     }
 
     try {
-      const loginResponse = await axios.post(api.auth.signin, userForm, {
+      const loginResponse = await AuthApi.post('/signin', userForm, {
         validateStatus: status => status < 400,
       });
       localStorage.setItem('accessToken', loginResponse.data.access_token);
       navigate('/todo');
     } catch (error: any) {
       if (error.response.status === 404) {
-        const signupResponse = await axios.post(api.auth.signup, userForm, {
+        const signupResponse = await AuthApi.post('/signup', userForm, {
           validateStatus: status => status < 400,
         });
         navigate('/todo');
@@ -63,6 +63,10 @@ const SignupOrLogin = () => {
       }
     }
   }, [userForm, validateUserForm, navigate]);
+
+  useEffect(() => {
+    if (token) navigate('/todo');
+  }, [navigate, token]);
 
   return (
     <Styled.Page>
@@ -74,6 +78,7 @@ const SignupOrLogin = () => {
             <InputLabel
               label="Email"
               name="email"
+              value={userForm.email}
               type="text"
               placeholder="Email"
               onChange={onChangeText}
@@ -83,6 +88,7 @@ const SignupOrLogin = () => {
               label="Password"
               name="password"
               type="password"
+              value={userForm.password}
               placeholder="Password"
               onChange={onChangeText}
               hintLabel="Password는 8자 이상이 되어야 합니다"
