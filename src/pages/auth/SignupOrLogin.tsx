@@ -157,5 +157,6 @@ const Styled = {
     width: 100%;
     margin-top: 24px;
     height: 55px;
+    transition: opacity 250ms ease-in-out;
   `,
 };

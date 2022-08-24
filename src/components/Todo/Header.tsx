@@ -36,7 +36,7 @@ const Header = (props: TodoHeaderProps) => {
         value={userInput}
       />
       <Styled.Button variant="primary" onClick={onClickAddBtn}>
-        Add
+        추가하기
       </Styled.Button>
     </Styled.InputContainer>
   );
@@ -48,7 +48,7 @@ const Styled = {
   `,
 
   Button: styled(Button)`
-    width: 50%;
+    width: 30%;
     height: 40px;
     margin-left: 8px;
     border-radius: 12px;

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { flexBox } from 'styles/utils';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'outlined';
+export type ButtonVariant = 'primary' | 'outlined';
 
 type ButtonProps = {
   variant: ButtonVariant;
@@ -77,12 +77,13 @@ const primaryButtonStyle = css`
 
 const outlinedButtonStyle = css`
   color: ${({ theme }) => theme.colors.primary.base};
-  background-color: ${({ theme }) => theme.colors.white};
+  background-color: transparent;
   border: 1px solid ${({ theme }) => theme.colors.primary.base};
-  transition: background-color 200ms ease-in-out;
+  transition: all 200ms ease-in-out;
 
   &:not(:disabled):hover {
-    background-color: ${({ theme }) => theme.colors.primary.light};
+    color: ${({ theme }) => theme.colors.semantic.error};
+    border-color: ${({ theme }) => theme.colors.semantic.error};
   }
 `;
 
