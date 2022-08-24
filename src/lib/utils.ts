@@ -17,7 +17,9 @@ export function parseJwt(token: string | null) {
 }
 
 export function getUserId(email: string) {
-  if (email.includes('@')) {
+  if (email?.includes('@')) {
     return email.split('@')[0];
+  } else {
+    return;
   }
 }
