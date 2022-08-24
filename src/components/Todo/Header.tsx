@@ -1,3 +1,4 @@
+import Button from 'components/Button';
 import { InputBase } from 'components/Input';
 import React, { ChangeEvent, KeyboardEvent, memo, useState } from 'react';
 import styled from 'styled-components';
@@ -34,7 +35,9 @@ const Header = (props: TodoHeaderProps) => {
         onKeyDown={onPressEnter}
         value={userInput}
       />
-      <Styled.Button onClick={onClickAddBtn}>Add</Styled.Button>
+      <Styled.Button variant="primary" onClick={onClickAddBtn}>
+        추가하기
+      </Styled.Button>
     </Styled.InputContainer>
   );
 };
@@ -44,20 +47,11 @@ const Styled = {
     ${flexBox('start', 'center')};
   `,
 
-  Button: styled.button`
-    ${textStyle('base')};
-    width: 50%;
+  Button: styled(Button)`
+    width: 30%;
+    height: 40px;
     margin-left: 8px;
-    padding: 8px 6px;
-    background-color: ${({ theme }) => theme.colors.primary.base};
-    color: ${({ theme }) => theme.colors.white};
     border-radius: 12px;
-    font-weight: 700;
-    transition: background-color 250ms ease-in-out;
-
-    :hover {
-      background-color: ${({ theme }) => theme.colors.primary.dark};
-    }
   `,
 };
 

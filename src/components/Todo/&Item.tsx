@@ -1,3 +1,4 @@
+import Button from 'components/Button';
 import { TodoType } from 'pages/home/Todo';
 import React, {
   ChangeEvent,
@@ -29,28 +30,33 @@ const TodoItem = (props: TodoItemProps) => {
   const { id, todo, isCompleted, onDelete, onUpdate } = props;
   const [userInput, setUserInput] = useState(todo);
   const [isEditing, setIsEditing] = useState(false);
+  console.log(todo);
 
   const onClickEditBtn = useCallback(() => {
     setIsEditing(prev => !prev);
   }, []);
 
-  const handleInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeText = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setUserInput(e.target.value);
   }, []);
+
+  const onSubmitEditing = useCallback(async () => {
+    setIsEditing(false);
+    onUpdate({ id, todo: userInput, isCompleted });
+  }, [id, onUpdate, userInput, isCompleted]);
 
   const onPressEnter = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key !== 'Enter') return;
-      onUpdate({ id, todo: userInput, isCompleted });
-      setIsEditing(false);
+      onSubmitEditing();
     },
-    [id, onUpdate, userInput, isCompleted]
+    [onSubmitEditing]
   );
 
-  const onBlurInput = useCallback(async () => {
+  const rejectEditing = useCallback(() => {
+    setUserInput(todo);
     setIsEditing(false);
-    onUpdate({ id, todo: userInput, isCompleted });
-  }, [id, onUpdate, userInput, isCompleted]);
+  }, [todo]);
 
   const onClickCheckboxBtn = useCallback(() => {
     onUpdate({ id, todo, isCompleted: !isCompleted });
@@ -71,8 +77,7 @@ const TodoItem = (props: TodoItemProps) => {
             as="input"
             autoFocus
             value={userInput ?? todo}
-            onChange={handleInput}
-            onBlur={onBlurInput}
+            onChange={onChangeText}
             onKeyPress={onPressEnter}
           />
         ) : (
@@ -82,12 +87,25 @@ const TodoItem = (props: TodoItemProps) => {
         )}
       </div>
       <div className="right">
-        <Styled.Icon>
-          <Styled.EditBtn selected={isEditing} onClick={onClickEditBtn} />
-        </Styled.Icon>
-        <Styled.Icon onClick={() => onDelete(id)}>
-          <Styled.DeleteBtn />
-        </Styled.Icon>
+        {isEditing ? (
+          <>
+            <Styled.Button variant="primary" onClick={onSubmitEditing}>
+              수정하기
+            </Styled.Button>
+            <Styled.Button variant="outlined" onClick={rejectEditing}>
+              돌아가기
+            </Styled.Button>
+          </>
+        ) : (
+          <>
+            <Styled.Icon>
+              <Styled.EditBtn selected={isEditing} onClick={onClickEditBtn} />
+            </Styled.Icon>
+            <Styled.Icon onClick={() => onDelete(id)}>
+              <Styled.DeleteBtn />
+            </Styled.Icon>
+          </>
+        )}
       </div>
     </Styled.Item>
   );
@@ -95,10 +113,6 @@ const TodoItem = (props: TodoItemProps) => {
 
 type IconStyleProps = {
   selected: boolean;
-};
-
-type TodoTextStyleProps = {
-  isCompleted: boolean;
 };
 
 const Styled = {
@@ -110,11 +124,14 @@ const Styled = {
 
     .left {
       ${flexBox('start', 'center')};
+      width: 70%;
       overflow: hidden;
+      margin-right: 8px;
     }
 
     .right {
-      ${flexBox('start', 'center')};
+      ${flexBox('end', 'center')};
+      width: 30%;
     }
   `,
 
@@ -125,6 +142,17 @@ const Styled = {
     margin-right: 8px;
     transition: color 250ms ease-in-out;
     cursor: pointer;
+
+    :last-child {
+      margin-right: 0;
+    }
+  `,
+
+  Button: styled(Button)`
+    ${textStyle('xxs')};
+    width: 100%;
+    height: 32px;
+    margin-right: 8px;
 
     :last-child {
       margin-right: 0;

@@ -62,7 +62,7 @@ const Todo = () => {
   return (
     <Styled.Page>
       <Styled.Container>
-        <Styled.Title>{userId}'s TODO</Styled.Title>
+        <Styled.Title>{userId}'s 일감</Styled.Title>
         <Header createTodo={createTodo} />
         <TodoList todos={todos} onDelete={deleteTodo} onUpdate={updateTodo} />
       </Styled.Container>
@@ -81,7 +81,7 @@ const Styled = {
   `,
 
   Container: styled.main`
-    width: 384px;
+    width: 520px;
     padding: 32px 36px;
     background-color: ${({ theme }) => theme.colors.background};
     border-radius: 24px; ;
