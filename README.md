@@ -1,46 +1,49 @@
-# Getting Started with Create React App
+# 원티드 프리온보딩 프론트엔드 - 선발 과제
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 실행 링크
 
-## Available Scripts
+https://wanted-pre-onboarding-fe-eight.vercel.app/
 
-In the project directory, you can run:
+## 프로젝트의 실행 방법
 
-### `npm start`
+```
+git clone https://github.com/YunKukPark/wanted-pre-onboarding-fe.git
+npm i
+npm start
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 사용한 라이브러리
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- react-router-dom
+- styled-component
+- axios
+- react-icons
+- typescript
 
-### `npm test`
+<br />
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## :: 구현 목표
 
-### `npm run build`
+| MISSION NUMBER | Page  | DESC                               | 구현 |
+| :------------: | :---: | :--------------------------------- | :--: |
+|       1        | Login | 유효성 검사                        |  ✅  |
+|       2        | Login | 로그인 API 호출                    |  ✅  |
+|       3        |  All  | 로그인 여부에 따른 리다이렉트 처리 |  ✅  |
+|       4        | Todo  | Todo `Read / Create`               |  ✅  |
+|       5        | Todo  | Todo `Update / Delete`             |  ✅  |
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+<br />
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## :: 구현 사항 설명
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+<br/>
 
-### `npm run eject`
+| Page  | 구현사항                           | 구현이미지 | desc                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| :---: | :--------------------------------- | :--------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Login | 유효성검사                         |![mission1](https://user-images.githubusercontent.com/53929065/186328600-b909bc46-0749-40b5-aadc-507ce9b4e5a0.gif)| - 이메일 조건: `@` 포함<br/> - 비밀번호 조건: 8자 이상<br/> - 입력된 이메일과 비밀번호가 위 조건을 만족할 때만 버튼이 활성화 되도록 해주세요 |
+| Login | 로그인 API 호출                    |   | - 로그인 API를 호출하고, 올바른 응답을 받았을 때 `/todo` 경로로 이동해주세요<br />- 로그인 API는 로그인이 성공했을 시 Response Body에 JWT를 포함해서 응답합니다.<br />- 응답받은 JWT는 로컬 스토리지에 저장해주세요 |
+|  All  | 로그인 여부에 따른 리다이렉트 처리 |            | `token`이 있으면 `/todo`로 없으면 `/` 로 이동|
+| Todo  | Todo `Read / Create`               |  ![mission4](https://user-images.githubusercontent.com/53929065/186328646-9af1dbb2-0a3c-40f1-b26b-a45b71148a4f.gif)| - `/todo`경로에 접속하면 투두 리스트의 목록을 볼 수 있도록 해주세요<br/>- 리스트 페이지에는 투두 리스트의 내용과 완료 여부가 표시되어야 합니다.<br/>- 리스트 페이지에는 입력창과 추가 버튼이 있고, 추가 버튼을 누르면 입력창의 내용이 새로운 투두 리스트로 추가되도록 해주세요|
+| Todo  | Todo `Update / Delete`             |  ![mission5](https://user-images.githubusercontent.com/53929065/186328653-5ed42ec4-ad4f-4431-8781-8072c87ea0fb.gif)| - 투두 리스트의 수정, 삭제 기능을 구현해주세요<br/>- 투두 리스트의 개별 아이템 우측에 수정버튼이 존재하고 해당 버튼을 누르면 수정모드가 활성화되고 투두 리스트의 내용을 수정할 수 있도록 해주세요<br/>- 수정모드에서는 개별 아이템의 우측에 제출버튼과 취소버튼이 표시되며 해당 버튼을 통해서 수정 내용을 제출하거나 수정을 취소할 수 있도록 해주세요<br/>- 투두 리스트의 개별 아이템 우측에 삭제버튼이 존재하고 해당 버튼을 누르면 투두 리스트가 삭제되도록 해주세요 |
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+<br />
