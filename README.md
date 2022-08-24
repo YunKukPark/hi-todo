@@ -8,6 +8,7 @@ https://wanted-pre-onboarding-fe-eight.vercel.app/
 
 ```
 git clone https://github.com/YunKukPark/wanted-pre-onboarding-fe.git
+cd wanted-pre-onboarding-fe
 npm i
 npm start
 ```
