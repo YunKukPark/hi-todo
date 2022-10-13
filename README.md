@@ -1,17 +1,4 @@
-# 원티드 프리온보딩 프론트엔드 - 선발 과제
 
-## 실행 링크
-
-https://wanted-pre-onboarding-fe-eight.vercel.app/
-
-## 프로젝트의 실행 방법
-
-```
-git clone https://github.com/YunKukPark/wanted-pre-onboarding-fe.git
-cd wanted-pre-onboarding-fe
-npm i
-npm start
-```
 
 ## 사용한 라이브러리
 
